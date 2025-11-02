@@ -1,130 +1,100 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phúc Aurora</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phuc Aurora</title>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #1d2671, #c33764);
-      color: white;
+    * {margin: 0; padding: 0; box-sizing: border-box;}
+    body {font-family: 'Poppins', sans-serif; background: #000; color: white; overflow: hidden;}
+
+    /* Intro */
+    .intro {
+      position: fixed;
+      inset: 0;
+      background: url('https://images.unsplash.com/photo-1503264116251-35a269479413?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       text-align: center;
-      overflow-x: hidden;
+      z-index: 10;
+      transition: opacity 1s ease;
     }
 
-    header {
-      padding: 60px 20px 20px;
-      animation: fadeInDown 1s ease-out;
+    .intro h1 {
+      font-size: 3em;
+      margin-bottom: 1em;
+      text-shadow: 0 0 20px rgba(0,0,0,0.6);
+      animation: fadeIn 2s ease;
     }
 
-    header img {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 3px solid white;
-      box-shadow: 0 0 15px rgba(255,255,255,0.3);
-      margin-bottom: 20px;
+    .intro button {
+      padding: 12px 25px;
+      font-size: 1.2em;
+      border: none;
+      background: rgba(255,255,255,0.8);
+      color: #000;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
     }
 
-    h1 {
-      font-size: 2.5em;
-      margin-bottom: 10px;
+    .intro button:hover {
+      background: #fff;
+      transform: scale(1.1);
     }
 
-    p.subtitle {
-      color: #ddd;
-      font-size: 1.1em;
-    }
-
-    .card {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 30px;
-      width: 85%;
-      max-width: 450px;
-      margin: 20px auto;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-      transition: transform 0.3s ease;
-      animation: fadeInUp 1s ease;
-    }
-
-    .card:hover {
-      transform: scale(1.05);
-    }
-
-    a {
-      color: #ffcc70;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .socials {
-      margin-top: 25px;
-    }
-
-    .socials a {
-      margin: 0 10px;
-      display: inline-block;
-      font-size: 1.4em;
-      transition: transform 0.3s;
-    }
-
-    .socials a:hover {
-      transform: scale(1.2);
-    }
-
-    footer {
-      margin-top: 40px;
-      font-size: 0.9em;
-      color: #ccc;
-      padding-bottom: 30px;
-    }
-
-    @keyframes fadeInUp {
-      from {opacity: 0; transform: translateY(30px);}
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
       to {opacity: 1; transform: translateY(0);}
     }
 
-    @keyframes fadeInDown {
-      from {opacity: 0; transform: translateY(-30px);}
-      to {opacity: 1; transform: translateY(0);}
+    /* Nội dung chính */
+    .main {
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .main.show {
+      opacity: 1;
     }
   </style>
 </head>
 <body>
-  <header>
-    <!-- 🖼️ Ảnh đại diện -->
-    <img src="https://i.imgur.com/qYvXWzE.png" alt="Avatar">
-    <h1>Xin chào, tôi là <span style="color:#ffcc70;">Phúc Aurora</span> 👋</h1>
-    <p class="subtitle">Người yêu công nghệ, sáng tạo nội dung & khám phá ý tưởng mới</p>
-  </header>
 
-  <div class="card">
-    <h2>🧠 Giới thiệu</h2>
-    <p>Tôi thích học hỏi và chia sẻ những gì mình biết qua các dự án cá nhân, blog và lập trình web.</p>
+  <!-- Intro -->
+  <div class="intro" id="intro">
+    <h1>Chào mừng đến với thế giới mới 🌌</h1>
+    <button id="exploreBtn">Khám phá</button>
+    <audio id="bgMusic" loop>
+      <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_6e7f19a3b0.mp3?filename=ambient-110437.mp3" type="audio/mpeg">
+    </audio>
   </div>
 
-  <div class="card">
-    <h2>📫 Liên hệ</h2>
-    <p>Email: <a href="mailto:phucaurora@gmail.com">phucaurora@gmail.com</a></p>
-    <p>Facebook: <a href="https://fb.me/ban" target="_blank">fb.me/ban</a></p>
-    <div class="socials">
-      <a href="https://facebook.com/ban" target="_blank">🌐</a>
-      <a href="https://www.youtube.com/" target="_blank">▶️</a>
-      <a href="https://github.com/phucaurora" target="_blank">💻</a>
-    </div>
+  <!-- Trang web chính -->
+  <div class="main" id="main">
+    <h2 style="padding:50px; text-align:center;">Đây là trang chính của bạn 🌐</h2>
+    <p style="text-align:center;">Bạn có thể thêm nội dung, hình ảnh, hoặc link GitHub ở đây.</p>
   </div>
 
-  <footer>
-    © 2025 Phúc Aurora — Made with ❤️ using GitHub Pages
-  </footer>
+  <script>
+    const exploreBtn = document.getElementById('exploreBtn');
+    const intro = document.getElementById('intro');
+    const main = document.getElementById('main');
+    const bgMusic = document.getElementById('bgMusic');
+
+    // Phát nhạc khi nhấn
+    exploreBtn.addEventListener('click', () => {
+      bgMusic.play();
+      exploreBtn.textContent = 'Đang tải...';
+      intro.style.opacity = 0;
+      setTimeout(() => {
+        intro.style.display = 'none';
+        main.classList.add('show');
+      }, 1000);
+    });
+  </script>
+
 </body>
 </html>
