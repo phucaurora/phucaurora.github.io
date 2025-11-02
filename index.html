@@ -1,35 +1,86 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Trang cá nhân của Phúc Aurora</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phúc Aurora</title>
   <style>
-    body { font-family: Arial; margin:0; padding:0; text-align:center; background:#f4f4f4; }
-    header { background:#1e293b; color:white; padding:40px 20px; }
-    h1 { margin:0; font-size:28px; }
-    p { color:#ccc; margin:10px 0; }
-    main { padding:30px 10px; }
-    .card { background:white; width:90%; max-width:500px; margin:20px auto; padding:20px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); }
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1d2671, #c33764);
+      color: white;
+      text-align: center;
+    }
+
+    header {
+      padding: 60px 20px;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    p.subtitle {
+      color: #ddd;
+      font-size: 1.1em;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      width: 80%;
+      max-width: 400px;
+      margin: 20px auto;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    a {
+      color: #ffcc70;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #ccc;
+      padding-bottom: 30px;
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>Xin chào, tôi là Phúc Aurora 👋</h1>
-    <p>Đây là trang web cá nhân của tôi</p>
+    <h1>Xin chào, tôi là <span style="color:#ffcc70;">Phúc Aurora</span> 👋</h1>
+    <p class="subtitle">Một người yêu công nghệ, sáng tạo nội dung & khám phá ý tưởng mới</p>
   </header>
 
-  <main>
-    <div class="card">
-      <h2>Giới thiệu</h2>
-      <p>Tôi thích công nghệ, sáng tạo nội dung và khám phá ý tưởng mới.</p>
-    </div>
+  <div class="card">
+    <h2>🧠 Giới thiệu</h2>
+    <p>Tôi thích học hỏi và chia sẻ những gì mình biết qua các dự án cá nhân, blog và lập trình web.</p>
+  </div>
 
-    <div class="card">
-      <h2>Liên hệ</h2>
-      <p>Email: ban@domain.com</p>
-      <p>Facebook: fb.me/ban</p>
-    </div>
-  </main>
+  <div class="card">
+    <h2>📫 Liên hệ</h2>
+    <p>Email: <a href="mailto:phucaurora@gmail.com">phucaurora@gmail.com</a></p>
+    <p>Facebook: <a href="https://fb.me/ban" target="_blank">fb.me/ban</a></p>
+  </div>
+
+  <footer>
+    © 2025 Phúc Aurora — Made with ❤️ using GitHub Pages
+  </footer>
 </body>
 </html>
