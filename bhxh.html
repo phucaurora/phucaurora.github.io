@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hệ thống tính Bảo hiểm xã hội 1 lần</title>
+  <style>
+    :root{--accent:#9c6b2e;--muted:#666}
+    body{font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:#faf7f3; color:#222; margin:0; padding:32px}
+    .container{max-width:980px;margin:0 auto;background:#fff;border-radius:10px;padding:28px;box-shadow:0 6px 24px rgba(25,25,25,0.06)}
+    h1{font-size:20px;margin:0 0 6px;text-align:center}
+    p.lead{margin:0 0 18px;text-align:center;color:var(--muted)}
+
+    .tabs{display:flex;gap:12px;margin:14px 0 22px}
+    .tab{padding:10px 14px;border-radius:8px;border:1px solid #eee;background:#fff;cursor:pointer}
+    .tab.active{background:linear-gradient(180deg,#fff 0,#f8f3ea 100%);border-color:var(--accent);color:var(--accent);font-weight:600}
+
+    table{width:100%;border-collapse:collapse;margin-bottom:12px}
+    th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #f2efe9}
+    th{color:var(--muted);font-weight:600}
+
+    .controls{display:flex;gap:10px;flex-wrap:wrap}
+    select,input[type=number]{padding:8px 10px;border:1px solid #e6e0d7;border-radius:6px}
+    input.salary{min-width:170px}
+    button{background:var(--accent);color:#fff;border:none;padding:10px 16px;border-radius:8px;cursor:pointer}
+    .btn-secondary{background:#fff;color:var(--accent);border:1px solid #d6c9bb}
+    .btn-small{padding:8px 10px;font-size:14px}
+
+    .note{color:#b33;margin-top:12px;font-weight:600}
+    .result{margin-top:18px;background:#fff6e8;padding:12px;border-radius:8px;border:1px solid #f0e0ce}
+
+    .row-actions{display:flex;gap:8px}
+    .remove{background:#fff;border:1px solid #eee;color:#c33;padding:6px 8px;border-radius:6px}
+
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+
+    @media (max-width:680px){.controls{flex-direction:column}.tabs{overflow:auto}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>HỆ THỐNG TÍNH BẢO HIỂM XÃ HỘI 1 LẦN</h1>
+    <p class="lead">Cách tính bảo hiểm xã hội 1 lần đơn giản, dành cho người muốn tự tính tiền BHXH 1 lần</p>
+
+    <div class="tabs">
+      <div class="tab active" data-type="batbuoc">BHXH bắt buộc</div>
+      <div class="tab" data-type="tunguyen">BHXH tự nguyện</div>
+      <div class="tab" data-type="both">Cả BHXH bắt buộc &amp; BHXH tự nguyện</div>
+    </div>
+
+    <table aria-label="Danh sách giai đoạn đóng BHXH">
+      <thead>
+        <tr>
+          <th style="width:42px">Stt</th>
+          <th>Giai đoạn nộp BHXH</th>
+          <th style="width:200px">Mức lương đóng BHXH</th>
+          <th style="width:120px"></th>
+        </tr>
+      </thead>
+      <tbody id="periods">
+        <!-- rows injected by JS -->
+      </tbody>
+    </table>
+
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+      <button id="addPeriod" class="btn-secondary btn-small">+ THÊM GIAI ĐOẠN</button>
+      <button id="addMaternity" class="btn-secondary btn-small">+ GIAI ĐOẠN THAI SẢN</button>
+      <button id="calculate" class="btn-small">TÍNH BHXH</button>
+    </div>
+
+    <div class="result" id="result" style="display:none"></div>
+
+    <p class="note">Lưu ý: Vui lòng nhập quá trình đóng BHXH theo thứ tự lần lượt từ khi bắt đầu đóng bảo hiểm đến khi ngừng đóng.</p>
+
+    <footer>Phiên bản demo — trang tính BHXH 1 lần</footer>
+  </div>
+
+<script>
+  // Helper to create month and year selects
+  function createMonthSelect(namePrefix, value){
+    const sel = document.createElement('select');
+    sel.name = namePrefix+'-month';
+    for(let m=1;m<=12;m++){const opt=document.createElement('option');opt.value=m;opt.textContent='Tháng '+m; if(m===value) opt.selected=true; sel.appendChild(opt)}
+    return sel;
+  }
+  function createYearSelect(namePrefix, value){
+    const sel = document.createElement('select');
+    sel.name = namePrefix+'-year';
+    const currentYear = new Date().getFullYear();
+    for(let y=currentYear; y>=1970; y--){ const opt=document.createElement('option'); opt.value=y; opt.textContent='Năm '+y; if(y===value) opt.selected=true; sel.appendChild(opt)}
+    return sel;
+  }
+
+  const periodsTbody = document.getElementById('periods');
+  let index = 0;
+
+  function monthCount(m1,y1,m2,y2){
+    // inclusive count of months between (m1,y1) and (m2,y2). If end is before start, return 0
+    const start = y1*12 + (m1-1);
+    const end = y2*12 + (m2-1);
+    if(end < start) return 0;
+    return end - start + 1;
+  }
+
+  function addRow(opts={monthFrom:new Date().getMonth()+1, yearFrom:new Date().getFullYear(), monthTo:new Date().getMonth()+1, yearTo:new Date().getFullYear(), salary:5000000, type:'normal'}){
+    index++;
+    const tr = document.createElement('tr');
+    tr.dataset.index = index;
+
+    const tdIdx = document.createElement('td'); tdIdx.textContent = index.toString().padStart(2,'0');
+
+    const tdPeriod = document.createElement('td');
+    const fromLabel = document.createElement('div'); fromLabel.style.marginBottom='6px'; fromLabel.appendChild(createMonthSelect('f'+index, opts.monthFrom)); fromLabel.appendChild(createYearSelect('f'+index, opts.yearFrom));
+    const toLabel = document.createElement('div'); toLabel.appendChild(createMonthSelect('t'+index, opts.monthTo)); toLabel.appendChild(createYearSelect('t'+index, opts.yearTo));
+    tdPeriod.appendChild(fromLabel); tdPeriod.appendChild(toLabel);
+
+    const tdSalary = document.createElement('td');
+    const input = document.createElement('input'); input.type='number'; input.className='salary'; input.value=opts.salary; input.min=0; input.step=1000; input.style.width='100%'; tdSalary.appendChild(input);
+
+    const tdActions = document.createElement('td'); tdActions.className='row-actions';
+    const removeBtn = document.createElement('button'); removeBtn.className='remove'; removeBtn.textContent='Xóa'; removeBtn.addEventListener('click',()=>{ tr.remove(); refreshIndices() });
+    tdActions.appendChild(removeBtn);
+
+    tr.appendChild(tdIdx); tr.appendChild(tdPeriod); tr.appendChild(tdSalary); tr.appendChild(tdActions);
+    periodsTbody.appendChild(tr);
+  }
+
+  function refreshIndices(){
+    const rows = Array.from(periodsTbody.querySelectorAll('tr'));
+    rows.forEach((r,i)=>{ r.querySelector('td').textContent = (i+1).toString().padStart(2,'0') });
+  }
+
+  document.getElementById('addPeriod').addEventListener('click', ()=> addRow());
+  document.getElementById('addMaternity').addEventListener('click', ()=> addRow({salary:0, type:'maternity'}));
+
+  // initial single row
+  addRow();
+
+  document.getElementById('calculate').addEventListener('click', ()=>{
+    const rows = Array.from(periodsTbody.querySelectorAll('tr'));
+    if(rows.length===0){ alert('Vui lòng thêm ít nhất 1 giai đoạn'); return }
+
+    let totalMonths=0;
+    let totalMoney=0;
+
+    for(const r of rows){
+      const monthFrom = parseInt(r.querySelector('select[name^="f"][name$="-month"]').value);
+      const yearFrom  = parseInt(r.querySelector('select[name^="f"][name$="-year"]').value);
+      const monthTo   = parseInt(r.querySelector('select[name^="t"][name$="-month"]').value);
+      const yearTo    = parseInt(r.querySelector('select[name^="t"][name$="-year"]').value);
+      const salary    = parseFloat(r.querySelector('input[type=number]').value) || 0;
+
+      const months = monthCount(monthFrom,yearFrom,monthTo,yearTo);
+      totalMonths += months;
+      totalMoney += months * salary;
+    }
+
+    const resultDiv = document.getElementById('result');
+    resultDiv.style.display='block';
+    resultDiv.innerHTML = `<strong>Tổng giai đoạn:</strong> ${totalMonths} tháng<br><strong>Ước tính tổng lương đóng BHXH:</strong> ${totalMoney.toLocaleString('vi-VN')} VND`;
+  });
+
+  // simple tab toggle (visual only)
+  document.querySelectorAll('.tab').forEach(t=> t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+  }))
+</script>
+</body>
+</html>
