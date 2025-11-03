@@ -14,9 +14,28 @@ body {
   padding: 20px;
 }
 h1 { color: #1a237e; }
+
+.top-right {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+}
+.top-right a {
+  background-color: #2196f3;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+.top-right a:hover {
+  background-color: #1565c0;
+}
+
 table {
   width: 90%;
-  margin: 0 auto;
+  margin: 70px auto 0;
   border-collapse: collapse;
   border-radius: 12px;
   overflow: hidden;
@@ -51,118 +70,13 @@ tfoot {
   background: #e3f2fd;
   font-weight: bold;
 }
-a {
-  color: #0288d1;
-  text-decoration: none;
-}
-a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
+
+  <div class="top-right">
+    <a href="index.html">🏠 Trang chính</a>
+  </div>
+
   <h1>📊 Bảng tính lương cá nhân</h1>
-  <p>Nhập lương hàng tháng và hệ thống sẽ tự chia theo tỷ lệ 60% - 10% - 10% - 20%</p>
-
-  <table id="salaryTable">
-    <thead>
-      <tr>
-        <th>Tháng</th>
-        <th>Lương (VND)</th>
-        <th>Chi tiêu cố định (60%)</th>
-        <th>Quỹ dự phòng (10%)</th>
-        <th>Tiết kiệm du lịch (10%)</th>
-        <th>Đầu tư (20%)</th>
-        <th>Sửa</th>
-      </tr>
-    </thead>
-    <tbody id="tableBody"></tbody>
-    <tfoot>
-      <tr>
-        <td>Tổng cộng</td>
-        <td id="totalSalary">0</td>
-        <td id="totalFixed">0</td>
-        <td id="totalReserve">0</td>
-        <td id="totalTravel">0</td>
-        <td id="totalInvest">0</td>
-        <td></td>
-      </tr>
-    </tfoot>
-  </table>
-
-  <p><a href="index.html">← Quay lại trang chính</a></p>
-
-<script>
-const months = [
-  '10/2025','11/2025','12/2025','01/2026','02/2026','03/2026',
-  '04/2026','05/2026','06/2026','07/2026','08/2026','09/2026',
-  '10/2026','11/2026','12/2026'
-];
-
-function formatNumber(num) {
-  return num.toLocaleString('vi-VN');
-}
-
-function parseNumber(str) {
-  return parseFloat(str.replace(/\./g, '').replace(/,/g, '')) || 0;
-}
-
-const tbody = document.getElementById('tableBody');
-
-// tạo dòng
-months.forEach(m => {
-  const saved = localStorage.getItem(m) || 0;
-  const row = document.createElement('tr');
-  row.innerHTML = `
-    <td>${m}</td>
-    <td><input type="text" value="${formatNumber(saved)}" oninput="updateRow(this)"></td>
-    <td class="fixed">0</td>
-    <td class="reserve">0</td>
-    <td class="travel">0</td>
-    <td class="invest">0</td>
-    <td><button class="edit" onclick="editRow(this)">✏️</button></td>
-  `;
-  tbody.appendChild(row);
-});
-
-function updateRow(input) {
-  let raw = input.value.replace(/[^\d]/g, '');
-  if (raw) input.value = formatNumber(parseFloat(raw));
-  const row = input.closest('tr');
-  const salary = parseNumber(input.value);
-  row.querySelector('.fixed').textContent = formatNumber(salary * 0.6);
-  row.querySelector('.reserve').textContent = formatNumber(salary * 0.1);
-  row.querySelector('.travel').textContent = formatNumber(salary * 0.1);
-  row.querySelector('.invest').textContent = formatNumber(salary * 0.2);
-  localStorage.setItem(row.cells[0].textContent, salary);
-  updateTotals();
-}
-
-function editRow(btn) {
-  const input = btn.closest('tr').querySelector('input');
-  input.focus();
-  input.select();
-}
-
-function updateTotals() {
-  let totalSalary=0, totalFixed=0, totalReserve=0, totalTravel=0, totalInvest=0;
-  document.querySelectorAll('#salaryTable tbody tr').forEach(r=>{
-    const s = parseNumber(r.querySelector('input').value);
-    totalSalary += s;
-    totalFixed += parseNumber(r.querySelector('.fixed').textContent);
-    totalReserve += parseNumber(r.querySelector('.reserve').textContent);
-    totalTravel += parseNumber(r.querySelector('.travel').textContent);
-    totalInvest += parseNumber(r.querySelector('.invest').textContent);
-  });
-  document.getElementById('totalSalary').textContent = formatNumber(totalSalary);
-  document.getElementById('totalFixed').textContent = formatNumber(totalFixed);
-  document.getElementById('totalReserve').textContent = formatNumber(totalReserve);
-  document.getElementById('totalTravel').textContent = formatNumber(totalTravel);
-  document.getElementById('totalInvest').textContent = formatNumber(totalInvest);
-}
-
-// khôi phục dữ liệu
-window.onload = () => {
-  document.querySelectorAll('#salaryTable tbody tr input').forEach(i => updateRow(i));
-};
-</script>
-</body>
-</html>
+  <p
