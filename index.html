@@ -50,14 +50,105 @@
       to {opacity: 1; transform: translateY(0);}
     }
 
-    /* Nội dung chính */
+    /* Trang chính */
     .main {
       opacity: 0;
       transition: opacity 1s ease;
+      text-align: center;
+      padding: 50px 20px;
+      overflow-y: auto;
+      height: 100vh;
+      background: linear-gradient(180deg, #000, #111);
+      position: relative;
     }
 
     .main.show {
       opacity: 1;
+    }
+
+    /* Nút Lương */
+    .salary-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0,255,170,0.8);
+      color: black;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 1em;
+      transition: 0.3s;
+    }
+
+    .salary-btn:hover {
+      background: rgba(0,255,200,1);
+      transform: scale(1.05);
+    }
+
+    /* Trang tính lương */
+    .salary-page {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, #001, #011);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: opacity 1s ease;
+    }
+
+    .salary-page.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .salary-box {
+      background: rgba(255,255,255,0.1);
+      border-radius: 15px;
+      padding: 20px;
+      max-width: 400px;
+      margin: 30px auto;
+      box-shadow: 0 0 15px rgba(255,255,255,0.1);
+    }
+
+    .salary-box input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+    }
+
+    .salary-box button {
+      background: #00ffcc;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .salary-box button:hover {
+      background: #00ffaa;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.4);
     }
   </style>
 </head>
@@ -65,17 +156,30 @@
 
   <!-- Intro -->
   <div class="intro" id="intro">
-    <h1>Chào mừng đến với thế giới mới 🌌</h1>
+    <h1>Chào mừng đến với thế giới của Phúc 🌌</h1>
     <button id="exploreBtn">Khám phá</button>
     <audio id="bgMusic" loop>
       <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_6e7f19a3b0.mp3?filename=ambient-110437.mp3" type="audio/mpeg">
     </audio>
   </div>
 
-  <!-- Trang web chính -->
+  <!-- Trang chính -->
   <div class="main" id="main">
-    <h2 style="padding:50px; text-align:center;">Đây là trang chính của bạn 🌐</h2>
-    <p style="text-align:center;">Bạn có thể thêm nội dung, hình ảnh, hoặc link GitHub ở đây.</p>
+    <h2>Trang Chính của Phúc 🌐</h2>
+    <p>Chào mừng bạn đến với website cá nhân của mình.</p>
+    <button class="salary-btn" id="openSalary">💰 Lương</button>
+  </div>
+
+  <!-- Trang tính lương -->
+  <div class="salary-page" id="salaryPage">
+    <button class="back-btn" id="backBtn">← Quay lại</button>
+    <div class="salary-box">
+      <h3>Tính lương hàng tháng</h3>
+      <input type="number" id="hours" placeholder="Số giờ làm việc trong tháng">
+      <input type="number" id="rate" placeholder="Lương mỗi giờ (VNĐ)">
+      <button id="calcBtn">Tính lương</button>
+      <h3 id="result"></h3>
+    </div>
   </div>
 
   <script>
@@ -83,8 +187,10 @@
     const intro = document.getElementById('intro');
     const main = document.getElementById('main');
     const bgMusic = document.getElementById('bgMusic');
+    const openSalary = document.getElementById('openSalary');
+    const salaryPage = document.getElementById('salaryPage');
+    const backBtn = document.getElementById('backBtn');
 
-    // Phát nhạc khi nhấn
     exploreBtn.addEventListener('click', () => {
       bgMusic.play();
       exploreBtn.textContent = 'Đang tải...';
@@ -93,6 +199,33 @@
         intro.style.display = 'none';
         main.classList.add('show');
       }, 1000);
+    });
+
+    // Mở trang tính lương
+    openSalary.addEventListener('click', () => {
+      main.style.display = 'none';
+      salaryPage.classList.add('show');
+    });
+
+    // Quay lại trang chính
+    backBtn.addEventListener('click', () => {
+      salaryPage.classList.remove('show');
+      main.style.display = 'block';
+    });
+
+    // Tính lương
+    document.getElementById('calcBtn').addEventListener('click', () => {
+      const hours = parseFloat(document.getElementById('hours').value);
+      const rate = parseFloat(document.getElementById('rate').value);
+      const result = document.getElementById('result');
+
+      if (isNaN(hours) || isNaN(rate)) {
+        result.textContent = "⚠️ Vui lòng nhập đủ thông tin!";
+        return;
+      }
+
+      const salary = hours * rate;
+      result.textContent = `💰 Lương của bạn là: ${salary.toLocaleString()} VNĐ`;
     });
   </script>
 
