@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tính lương cá nhân</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: white;
+    text-align: center;
+    padding: 20px;
+  }
+  table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  th, td {
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 10px;
+  }
+  th {
+    background-color: rgba(255,255,255,0.2);
+  }
+  input {
+    width: 100px;
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+    text-align: right;
+  }
+  .total-row {
+    background-color: rgba(255,255,255,0.3);
+    font-weight: bold;
+  }
+  a {
+    color: #00e5ff;
+    text-decoration: none;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+  <h1>📊 Bảng tính lương cá nhân</h1>
+  <p>Nhập lương hàng tháng và hệ thống sẽ tự chia theo tỷ lệ 60% - 10% - 10% - 20%</p>
+
+  <table id="salaryTable">
+    <thead>
+      <tr>
+        <th>Tháng</th>
+        <th>Lương (VND)</th>
+        <th>Chi tiêu cố định (60%)</th>
+        <th>Quỹ dự phòng (10%)</th>
+        <th>Tiết kiệm du lịch (10%)</th>
+        <th>Đầu tư (20%)</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+    <tfoot>
+      <tr class="total-row">
+        <td>Tổng cộng</td>
+        <td id="totalSalary">0</td>
+        <td id="totalFixed">0</td>
+        <td id="totalReserve">0</td>
+        <td id="totalTravel">0</td>
+        <td id="totalInvest">0</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <p><a href="index.html">← Quay lại trang chính</a></p>
+
+<script>
+const months = [
+  '10/2025','11/2025','12/2025',
+  '01/2026','02/2026','03/2026','04/2026','05/2026',
+  '06/2026','07/2026','08/2026','09/2026','10/2026','11/2026','12/2026'
+];
+const tbody = document.getElementById('tableBody');
+
+months.forEach(m => {
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>${m}</td>
+    <td><input type="number" min="0" onchange="updateRow(this)"></td>
+    <td class="fixed">0</td>
+    <td class="reserve">0</td>
+    <td class="travel">0</td>
+    <td class="invest">0</td>
+  `;
+  tbody.appendChild(row);
+});
+
+function updateRow(input) {
+  const row = input.closest('tr');
+  const salary = parseFloat(input.value) || 0;
+  row.querySelector('.fixed').textContent = (salary * 0.6).toFixed(0);
+  row.querySelector('.reserve').textContent = (salary * 0.1).toFixed(0);
+  row.querySelector('.travel').textContent = (salary * 0.1).toFixed(0);
+  row.querySelector('.invest').textContent = (salary * 0.2).toFixed(0);
+  updateTotals();
+}
+
+function updateTotals() {
+  let totalSalary=0, totalFixed=0, totalReserve=0, totalTravel=0, totalInvest=0;
+  document.querySelectorAll('#salaryTable tbody tr').forEach(r=>{
+    const cells = r.querySelectorAll('td');
+    const s = parseFloat(cells[1].querySelector('input').value)||0;
+    totalSalary += s;
+    totalFixed += parseFloat(cells[2].textContent)||0;
+    totalReserve += parseFloat(cells[3].textContent)||0;
+    totalTravel += parseFloat(cells[4].textContent)||0;
+    totalInvest += parseFloat(cells[5].textContent)||0;
+  });
+  document.getElementById('totalSalary').textContent = totalSalary.toFixed(0);
+  document.getElementById('totalFixed').textContent = totalFixed.toFixed(0);
+  document.getElementById('totalReserve').textContent = totalReserve.toFixed(0);
+  document.getElementById('totalTravel').textContent = totalTravel.toFixed(0);
+  document.getElementById('totalInvest').textContent = totalInvest.toFixed(0);
+}
+</script>
+</body>
+</html>
