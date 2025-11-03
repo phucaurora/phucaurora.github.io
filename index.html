@@ -6,7 +6,12 @@
   <title>Phuc Aurora</title>
   <style>
     * {margin: 0; padding: 0; box-sizing: border-box;}
-    body {font-family: 'Poppins', sans-serif; background: #000; color: white; overflow: hidden;}
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #000;
+      color: white;
+      overflow: hidden;
+    }
 
     /* Intro */
     .intro {
@@ -66,89 +71,43 @@
       opacity: 1;
     }
 
-    /* Nút Lương */
-    .salary-btn {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: rgba(0,255,170,0.8);
-      color: black;
-      border: none;
-      border-radius: 20px;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 1em;
-      transition: 0.3s;
+    .main h2 {
+      margin-top: 30px;
+      font-size: 2em;
     }
 
-    .salary-btn:hover {
-      background: rgba(0,255,200,1);
+    /* Nút cố định */
+    .salary-btn, .bhxh-btn {
+      position: fixed;
+      bottom: 20px;
+      background: rgba(255,255,255,0.8);
+      color: #000;
+      padding: 10px 18px;
+      border-radius: 25px;
+      font-weight: bold;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      display: none;
+    }
+
+    .salary-btn:hover, .bhxh-btn:hover {
       transform: scale(1.05);
     }
 
-    /* Trang tính lương */
-    .salary-page {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(180deg, #001, #011);
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      transition: opacity 1s ease;
-    }
-
-    .salary-page.show {
-      display: flex;
-      opacity: 1;
-    }
-
-    .salary-box {
-      background: rgba(255,255,255,0.1);
-      border-radius: 15px;
-      padding: 20px;
-      max-width: 400px;
-      margin: 30px auto;
-      box-shadow: 0 0 15px rgba(255,255,255,0.1);
-    }
-
-    .salary-box input {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border: none;
-      border-radius: 8px;
-    }
-
-    .salary-box button {
-      background: #00ffcc;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .salary-box button:hover {
-      background: #00ffaa;
-    }
-
-    .back-btn {
-      position: absolute;
-      top: 20px;
+    .salary-btn {
       left: 20px;
-      background: rgba(255,255,255,0.2);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 10px;
-      cursor: pointer;
+      background: #c5f6fa;
     }
 
-    .back-btn:hover {
-      background: rgba(255,255,255,0.4);
+    .bhxh-btn {
+      left: 130px;
+      background: #a5d8ff;
+    }
+
+    .show-btn {
+      display: inline-block;
+      animation: fadeIn 1s ease;
     }
   </style>
 </head>
@@ -161,94 +120,49 @@
     <audio id="bgMusic" loop>
       <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_6e7f19a3b0.mp3?filename=ambient-110437.mp3" type="audio/mpeg">
     </audio>
- <div class="top-right">
-  <a href="index.html">🏠 Trang chính</a>
-</div>
-   <h2>Trang Chính của Phúc 🌐</h2>
-    <p>Chào mừng bạn đến với website cá nhân của mình.</p>
-    <button class="salary-btn" id="openSalary">💰 Lương</button>
   </div>
 
-  <!-- Trang tính lương -->
-  <div class="salary-page" id="salaryPage">
-    <button class="back-btn" id="backBtn">← Quay lại</button>
-    <div class="salary-box">
-      <h3>Tính lương hàng tháng</h3>
-      <input type="number" id="hours" placeholder="Số giờ làm việc trong tháng">
-      <input type="number" id="rate" placeholder="Lương mỗi giờ (VNĐ)">
-      <button id="calcBtn">Tính lương</button>
-      <h3 id="result"></h3>
-    </div>
+  <!-- Trang chính -->
+  <div class="main" id="main">
+    <h2>Trang Chính của Phúc 🌐</h2>
+    <p>Chào mừng bạn đến với website cá nhân của mình.</p>
   </div>
+
+  <!-- Nút chức năng -->
+  <a href="salary.html" class="salary-btn" id="salaryBtn">💰 Lương</a>
+  <a href="bhxh.html" class="bhxh-btn" id="bhxhBtn">🩺 Bảo hiểm Xã hội</a>
 
   <script>
     const exploreBtn = document.getElementById('exploreBtn');
     const intro = document.getElementById('intro');
     const main = document.getElementById('main');
     const bgMusic = document.getElementById('bgMusic');
-    const openSalary = document.getElementById('openSalary');
-    const salaryPage = document.getElementById('salaryPage');
-    const backBtn = document.getElementById('backBtn');
+    const salaryBtn = document.getElementById('salaryBtn');
+    const bhxhBtn = document.getElementById('bhxhBtn');
 
+    // Nếu có ?main=true thì bỏ qua intro
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("main") === "true") {
+      intro.style.display = "none";
+      main.classList.add("show");
+      salaryBtn.classList.add("show-btn");
+      bhxhBtn.classList.add("show-btn");
+      bgMusic.play();
+    }
+
+    // Khi nhấn "Khám phá"
     exploreBtn.addEventListener('click', () => {
       bgMusic.play();
       exploreBtn.textContent = 'Đang tải...';
       intro.style.opacity = 0;
+
       setTimeout(() => {
         intro.style.display = 'none';
         main.classList.add('show');
+        salaryBtn.classList.add('show-btn');
+        bhxhBtn.classList.add('show-btn');
       }, 1000);
     });
-
-    // Mở trang tính lương
-    openSalary.addEventListener('click', () => {
-      main.style.display = 'none';
-      salaryPage.classList.add('show');
-    });
-
-    // Quay lại trang chính
-    backBtn.addEventListener('click', () => {
-      salaryPage.classList.remove('show');
-      main.style.display = 'block';
-    });
-
-    // Tính lương
-    document.getElementById('calcBtn').addEventListener('click', () => {
-      const hours = parseFloat(document.getElementById('hours').value);
-      const rate = parseFloat(document.getElementById('rate').value);
-      const result = document.getElementById('result');
-
-      if (isNaN(hours) || isNaN(rate)) {
-        result.textContent = "⚠️ Vui lòng nhập đủ thông tin!";
-        return;
-      }
-
-      const salary = hours * rate;
-      result.textContent = `💰 Lương của bạn là: ${salary.toLocaleString()} VNĐ`;
-    });
   </script>
-
-<!-- Nút tính lương -->
-<a href="salary.html" class="salary-btn">💰 Lương</a>
-
-<style>
-.salary-btn {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  background: #4fc3f7;
-  color: #000;
-  padding: 10px 18px;
-  border-radius: 25px;
-  font-weight: bold;
-  text-decoration: none;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  transition: all 0.3s ease;
-}
-.salary-btn:hover {
-  background: #81d4fa;
-  transform: scale(1.05);
-}
-</style>
 </body>
 </html>
