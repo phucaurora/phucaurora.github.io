@@ -39,20 +39,34 @@ th {
 td {
   border: 1px solid #ddd;
   padding: 8px;
+  text-align: center;
 }
 
-input[type="number"] {
-  width: 110px;
+input[type="text"] {
+  width: 120px;
   padding: 5px;
   border-radius: 6px;
   border: 1px solid #bbb;
   text-align: right;
   transition: 0.2s;
 }
-input[type="number"]:focus {
+input[type="text"]:focus {
   outline: none;
   border-color: #42a5f5;
   box-shadow: 0 0 6px rgba(66,165,245,0.5);
+}
+
+button.edit {
+  background: #bbdefb;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #0d47a1;
+  font-weight: bold;
+}
+button.edit:hover {
+  background: #90caf9;
 }
 
 tfoot {
@@ -71,4 +85,5 @@ a:hover {
 </head>
 <body>
   <h1>📊 Bảng tính lương cá nhân</h1>
-  <p>Nhập lương hàng tháng và hệ thống sẽ tự chia theo tỷ lệ 60% - 10% - 10% - 20%<br>
+  <p>Nhập lương hàng tháng và hệ thống tự chia theo tỷ lệ 60% - 10% - 10% - 20%<br>
+  Dữ liệu được <b>tự động lưu</b> và có thể <b>chỉnh sửa (✏️)</b> bất cứ lúc
