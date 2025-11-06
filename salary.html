@@ -1,190 +1,88 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bảng tính lương cá nhân</title>
-<style>
-body {
-  font-family: "Segoe UI", sans-serif;
-  background: linear-gradient(180deg, #ffffff, #e3f2fd);
-  color: #000;
-  text-align: center;
-  margin: 0;
-  padding: 20px;
-}
-h1 {
-  color: #1a237e;
-  margin-top: 40px;
-}
-table {
-  width: 90%;
-  margin: 20px auto;
-  border-collapse: collapse;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-  background: #fff;
-}
-th {
-  background: #42a5f5;
-  color: white;
-  padding: 10px;
-  font-size: 16px;
-}
-td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-input[type="text"] {
-  width: 110px;
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid #bbb;
-  text-align: right;
-}
-tfoot {
-  background: #e3f2fd;
-  font-weight: bold;
-}
-.edit-btn {
-  background: #ffb300;
-  border: none;
-  border-radius: 6px;
-  padding: 5px 8px;
-  cursor: pointer;
-}
-.edit-btn:hover {
-  background: #ffa000;
-}
-.top-right {
-  position: fixed;
-  top: 10px;
-  right: 15px;
-}
-.top-right a {
-  background: #2196f3;
-  color: white;
-  padding: 8px 15px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-}
-.top-right a:hover {
-  background: #1976d2;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng lương 2 đợt mỗi tháng</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fa;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #3498db;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    input[type="number"] {
+      width: 100px;
+      padding: 5px;
+      text-align: right;
+    }
+    tfoot td {
+      font-weight: bold;
+      background-color: #ecf0f1;
+    }
+  </style>
 </head>
 <body>
-  <div class="top-right">
-    <a href="index.html">🏠 Trang chính</a>
-  </div>
-
-  <h1>📊 Bảng tính lương cá nhân</h1>
-
+  <h2>BẢNG LƯƠNG 2 ĐỢT MỖI THÁNG (10/2025 - 12/2026)</h2>
   <table id="salaryTable">
     <thead>
       <tr>
         <th>Tháng</th>
+        <th>Đợt</th>
         <th>Lương (VND)</th>
-        <th>Chi tiêu cố định (60%)</th>
+        <th>Chi tiêu (60%)</th>
         <th>Quỹ dự phòng (10%)</th>
         <th>Tiết kiệm du lịch (10%)</th>
         <th>Đầu tư (20%)</th>
-        <th>Sửa</th>
       </tr>
     </thead>
-    <tbody id="tableBody"></tbody>
+    <tbody id="salaryBody"></tbody>
     <tfoot>
       <tr>
-        <td>Tổng cộng</td>
-        <td id="totalSalary">0</td>
-        <td id="totalFixed">0</td>
-        <td id="totalReserve">0</td>
-        <td id="totalTravel">0</td>
-        <td id="totalInvest">0</td>
-        <td></td>
+        <td colspan="2">Tổng cộng</td>
+        <td id="total-salary">0</td>
+        <td id="total-spend">0</td>
+        <td id="total-fund">0</td>
+        <td id="total-save">0</td>
+        <td id="total-invest">0</td>
       </tr>
     </tfoot>
   </table>
 
-<script>
-const months = [
-  '10/2025','11/2025','12/2025',
-  '01/2026','02/2026','03/2026','04/2026','05/2026',
-  '06/2026','07/2026','08/2026','09/2026','10/2026','11/2026','12/2026'
-];
-const tbody = document.getElementById("tableBody");
+  <script>
+    const months = [
+      "10/2025","11/2025","12/2025","01/2026","02/2026","03/2026",
+      "04/2026","05/2026","06/2026","07/2026","08/2026","09/2026",
+      "10/2026","11/2026","12/2026"
+    ];
 
-// Load data từ localStorage
-let saved = JSON.parse(localStorage.getItem("salaryData") || "{}");
+    const salaryBody = document.getElementById("salaryBody");
 
-months.forEach(m => {
-  const salary = saved[m]?.salary || "";
-  const row = document.createElement("tr");
-  row.innerHTML = `
-    <td>${m}</td>
-    <td><input type="text" value="${formatNumber(salary)}" oninput="handleInput(this)" onchange="updateRow(this)"></td>
-    <td class="fixed">0</td>
-    <td class="reserve">0</td>
-    <td class="travel">0</td>
-    <td class="invest">0</td>
-    <td><button class="edit-btn" onclick="editRow(this)">✏️</button></td>
-  `;
-  tbody.appendChild(row);
-  if (salary) updateRow(row.querySelector("input"), false);
-});
-
-function handleInput(input) {
-  input.value = formatNumber(input.value.replace(/\D/g,""));
-}
-
-function formatNumber(num) {
-  if (!num) return "";
-  return parseInt(num,10).toLocaleString("vi-VN");
-}
-
-function parseNumber(numStr) {
-  return parseFloat(numStr.replace(/\./g,"")) || 0;
-}
-
-function updateRow(input, save=true) {
-  const row = input.closest("tr");
-  const month = row.cells[0].textContent;
-  const salary = parseNumber(input.value);
-  row.querySelector(".fixed").textContent = (salary * 0.6).toLocaleString("vi-VN");
-  row.querySelector(".reserve").textContent = (salary * 0.1).toLocaleString("vi-VN");
-  row.querySelector(".travel").textContent = (salary * 0.1).toLocaleString("vi-VN");
-  row.querySelector(".invest").textContent = (salary * 0.2).toLocaleString("vi-VN");
-
-  if (save) {
-    saved[month] = { salary };
-    localStorage.setItem("salaryData", JSON.stringify(saved));
-  }
-
-  updateTotals();
-}
-
-function updateTotals() {
-  let totalSalary=0,totalFixed=0,totalReserve=0,totalTravel=0,totalInvest=0;
-  document.querySelectorAll("#salaryTable tbody tr").forEach(r=>{
-    totalSalary += parseNumber(r.cells[1].querySelector("input").value);
-    totalFixed += parseNumber(r.cells[2].textContent);
-    totalReserve += parseNumber(r.cells[3].textContent);
-    totalTravel += parseNumber(r.cells[4].textContent);
-    totalInvest += parseNumber(r.cells[5].textContent);
-  });
-  document.getElementById("totalSalary").textContent = totalSalary.toLocaleString("vi-VN");
-  document.getElementById("totalFixed").textContent = totalFixed.toLocaleString("vi-VN");
-  document.getElementById("totalReserve").textContent = totalReserve.toLocaleString("vi-VN");
-  document.getElementById("totalTravel").textContent = totalTravel.toLocaleString("vi-VN");
-  document.getElementById("totalInvest").textContent = totalInvest.toLocaleString("vi-VN");
-}
-
-function editRow(btn) {
-  const input = btn.closest("tr").querySelector("input");
-  input.focus();
-}
-</script>
-</body>
-</html>
+    months.forEach(month => {
+      ["Đợt 1 (mồng 10)", "Đợt 2 (ngày 25)"].forEach(dot => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${month}</td>
+          <td>${dot}</td>
+          <td><input type="num
